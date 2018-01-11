@@ -31,7 +31,6 @@
     "react": "16.0.0",
     "react-native": "0.50.3",
     "react-native-fbsdk": "^0.7.0",
-    "react-native-fbsdklogin": "0.0.8",
     "react-native-router-flux": "^4.0.0-beta.24",
     "react-navigation": "^1.0.0-beta.22",
     "redux": "^3.7.2",

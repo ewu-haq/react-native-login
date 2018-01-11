@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View, Text } from "react-native";
-import { LoginButton } from "react-native-fbsdk";
+import FBSDK, { AccessToken, LoginManager } from "react-native-fbsdk";
 import { Card, CardSection, Input, Button, Spinner } from "./common";
 import { connect } from "react-redux";
 import { emailChanged, passwordChanged, loginUser } from "../actions";
@@ -21,6 +21,26 @@ class LoginForm extends Component {
   onButtonPress() {
     const { email, password, navigation } = this.props;
     this.props.loginUser({ email, password, navigation });
+  }
+
+  onFbLogin() {
+    console.log("step1");
+    LoginManager.logInWithReadPermissions(["public_profile"]).then(
+      result => {
+        console.log("step2");
+        if (result.isCancelled) {
+          console.log("log in is cancelled");
+        } else {
+          console.log(
+            "log in success with permission: " +
+              result.grantedPermissions.toString()
+          );
+        }
+      },
+      error => {
+        console.log("login failed with error: " + error);
+      }
+    );
   }
 
   renderError() {
@@ -66,22 +86,9 @@ class LoginForm extends Component {
 
         <CardSection>{this.renderButton()}</CardSection>
         <CardSection>
-          <LoginButton
-            publishPermissions={["publish_actions"]}
-            onLoginFinished={(error, result) => {
-              if (error) {
-                console.log("Login failed with error: " + result.error);
-              } else if (result.isCancelled) {
-                console.log("Login was cancelled");
-              } else {
-                alert(
-                  "Login was successful with permissions: " +
-                    result.grantedPermissions
-                );
-              }
-            }}
-            onLogoutFinished={() => console.log("User logged out")}
-          />
+          <Button onPress={this.onFbLogin.bind(this)}>
+            Login with Facebook
+          </Button>
         </CardSection>
       </Card>
     );
