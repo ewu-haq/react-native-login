@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { View, Text } from "react-native";
+import { LoginButton } from "react-native-fbsdk";
 import { Card, CardSection, Input, Button, Spinner } from "./common";
 import { connect } from "react-redux";
 import { emailChanged, passwordChanged, loginUser } from "../actions";
@@ -64,6 +65,24 @@ class LoginForm extends Component {
         {this.renderError()}
 
         <CardSection>{this.renderButton()}</CardSection>
+        <CardSection>
+          <LoginButton
+            publishPermissions={["publish_actions"]}
+            onLoginFinished={(error, result) => {
+              if (error) {
+                console.log("Login failed with error: " + result.error);
+              } else if (result.isCancelled) {
+                console.log("Login was cancelled");
+              } else {
+                alert(
+                  "Login was successful with permissions: " +
+                    result.grantedPermissions
+                );
+              }
+            }}
+            onLogoutFinished={() => console.log("User logged out")}
+          />
+        </CardSection>
       </Card>
     );
   }
