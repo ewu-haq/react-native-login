@@ -23,24 +23,20 @@ class LoginForm extends Component {
     this.props.loginUser({ email, password, navigation });
   }
 
-  onFbLogin() {
-    console.log("step1");
-    LoginManager.logInWithReadPermissions(["public_profile"]).then(
-      result => {
-        console.log("step2");
-        if (result.isCancelled) {
-          console.log("log in is cancelled");
-        } else {
-          console.log(
-            "log in success with permission: " +
-              result.grantedPermissions.toString()
-          );
-        }
-      },
-      error => {
-        console.log("login failed with error: " + error);
+  async onFbLogin() {
+    const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(
+      "144233756288445",
+      {
+        permissions: ["public_profile"]
       }
     );
+    if (type === "success") {
+      // Get the user's name using Facebook's Graph API
+      const response = await fetch(
+        `https://graph.facebook.com/me?access_token=${token}`
+      );
+      console.log("Logged in!", `Hi ${(await response.json()).name}!`);
+    }
   }
 
   renderError() {
