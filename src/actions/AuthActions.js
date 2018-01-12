@@ -68,5 +68,60 @@ export const logoutUser = ({ navigation }) => {
     dispatch({
       type: LOG_OUT
     });
+
+    PerformResetNavigation(navigation, LOG_IN_SCREEN);
+  };
+};
+
+export const onFbLogin = ({ token, navigation }) => {
+  const credential = firebase.auth.FacebookAuthProvider.credential(token);
+  return dispatch => {
+    loginInProgress(dispatch);
+    firebase
+      .auth()
+      .signInWithCredential(credential)
+      .then(user => {
+        dispatch({
+          type: LOGIN_USER_SUCCESS,
+          payload: user
+        });
+
+        PerformResetNavigation(navigation, LOG_OUT_SCREEN);
+      })
+      .catch(error => {
+        dispatch({
+          type: LOGIN_USER_FAIL
+        });
+      });
+  };
+};
+
+export const onGoogleLogin = ({ idToken, accessKey, navigation }) => {
+  const credential = firebase.auth.GoogleAuthProvider.credential(
+    idToken,
+    accessKey
+  );
+  console.log("credential: ");
+  console.log(credential);
+  return dispatch => {
+    loginInProgress(dispatch);
+    firebase
+      .auth()
+      .signInWithCredential(credential)
+      .then(user => {
+        console.log("success: ");
+        dispatch({
+          type: LOGIN_USER_SUCCESS,
+          payload: user
+        });
+
+        PerformResetNavigation(navigation, LOG_OUT_SCREEN);
+      })
+      .catch(error => {
+        console.log("fail: " + error);
+        dispatch({
+          type: LOGIN_USER_FAIL
+        });
+      });
   };
 };

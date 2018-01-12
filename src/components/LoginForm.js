@@ -3,7 +3,13 @@ import { View, Text } from "react-native";
 import FBSDK, { AccessToken, LoginManager } from "react-native-fbsdk";
 import { Card, CardSection, Input, Button, Spinner } from "./common";
 import { connect } from "react-redux";
-import { emailChanged, passwordChanged, loginUser } from "../actions";
+import {
+  emailChanged,
+  passwordChanged,
+  loginUser,
+  onFbLogin,
+  onGoogleLogin
+} from "../actions";
 import firebase from "firebase";
 
 class LoginForm extends Component {
@@ -28,22 +34,36 @@ class LoginForm extends Component {
     const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(
       "144233756288445",
       {
-        permissions: ["public_profile"]
+        permissions: ["public_profile", "email"]
       }
     );
     if (type === "success") {
-      // Get the user's name using Facebook's Graph API
-      const response = await fetch(
-        `https://graph.facebook.com/me?access_token=${token}`
-      );
-      console.log("Logged in!", `Hi ${(await response.json()).name}!`);
-      AccessToken.getCurrentAccessToken().then(AccessTokenData => {
-        const token = AccessTokenData.accessToken;
-        const provider = firebase.auth.FacebookAuthProvider();
-        const credential = provider.credential(token);
-        firebase.auth().signInWithCredential(credential);
-        console.log("register ssucessfully");
+      const { navigation } = this.props;
+      this.props.onFbLogin({ token, navigation });
+    }
+  }
+
+  async signInWithGoogleAsync() {
+    try {
+      const result = await Expo.Google.logInAsync({
+        androidClientId:
+          "858222036738-32qijmafigeq710fuiduv6j8fr6j3v3t.apps.googleusercontent.com",
+        iosClientId:
+          "858222036738-6illvn86k5vu01vff3jb7vlhno64g6sg.apps.googleusercontent.com",
+        scopes: ["profile", "email"]
       });
+
+      if (result.type === "success") {
+        const { navigation } = this.props;
+        const { accessToken, idToken } = result;
+        this.props.onGoogleLogin({ idToken, accessToken, navigation });
+      } else {
+        console.log("cancelled");
+        return { cancelled: true };
+      }
+    } catch (e) {
+      console.log("error: " + e);
+      return { error: true };
     }
   }
 
@@ -94,6 +114,11 @@ class LoginForm extends Component {
             Login with Facebook
           </Button>
         </CardSection>
+        <CardSection>
+          <Button onPress={this.signInWithGoogleAsync.bind(this)}>
+            Login with Google
+          </Button>
+        </CardSection>
       </Card>
     );
   }
@@ -122,5 +147,7 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
   emailChanged,
   passwordChanged,
-  loginUser
+  loginUser,
+  onFbLogin,
+  onGoogleLogin
 })(LoginForm);

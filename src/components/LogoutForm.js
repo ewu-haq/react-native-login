@@ -5,14 +5,15 @@ import firebase from "firebase";
 import { connect } from "react-redux";
 import { logoutUser } from "../actions";
 
-const LogoutForm = () => {
-  const { navigation } = this.props;
-
-  return (
-    <CardSection>
-      <Button onPress={() => this.logoutUser({ navigation })}> Log Out </Button>
-    </CardSection>
-  );
-};
+class LogoutForm extends Component {
+  render() {
+    const { logoutUser, navigation } = this.props;
+    return (
+      <CardSection>
+        <Button onPress={() => logoutUser({ navigation })}> Log Out </Button>
+      </CardSection>
+    );
+  }
+}
 
 export default connect(null, { logoutUser })(LogoutForm);
