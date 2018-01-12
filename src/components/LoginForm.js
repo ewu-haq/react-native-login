@@ -4,6 +4,7 @@ import FBSDK, { AccessToken, LoginManager } from "react-native-fbsdk";
 import { Card, CardSection, Input, Button, Spinner } from "./common";
 import { connect } from "react-redux";
 import { emailChanged, passwordChanged, loginUser } from "../actions";
+import firebase from "firebase";
 
 class LoginForm extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
@@ -36,6 +37,13 @@ class LoginForm extends Component {
         `https://graph.facebook.com/me?access_token=${token}`
       );
       console.log("Logged in!", `Hi ${(await response.json()).name}!`);
+      AccessToken.getCurrentAccessToken().then(AccessTokenData => {
+        const token = AccessTokenData.accessToken;
+        const provider = firebase.auth.FacebookAuthProvider();
+        const credential = provider.credential(token);
+        firebase.auth().signInWithCredential(credential);
+        console.log("register ssucessfully");
+      });
     }
   }
 
