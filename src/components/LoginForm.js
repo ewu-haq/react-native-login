@@ -47,9 +47,9 @@ class LoginForm extends Component {
     try {
       const result = await Expo.Google.logInAsync({
         androidClientId:
-          "858222036738-32qijmafigeq710fuiduv6j8fr6j3v3t.apps.googleusercontent.com",
+          "474268404257-oidjenn5vjiam0tf0lo3jhhtop723qqb.apps.googleusercontent.com",
         iosClientId:
-          "858222036738-6illvn86k5vu01vff3jb7vlhno64g6sg.apps.googleusercontent.com",
+          "474268404257-ori3rsi50m8ho4sl3qatm8ogik6i9mko.apps.googleusercontent.com",
         scopes: ["profile", "email"]
       });
 
