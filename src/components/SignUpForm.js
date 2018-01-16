@@ -1,16 +1,34 @@
 import React, { Component } from "react";
-import { View, Text } from "react-native";
+import { View, Text, BackHandler } from "react-native";
 import { Card, CardSection, IconInput, Button, Spinner } from "./common";
 import { connect } from "react-redux";
 import {
   emailChanged,
   passwordChanged,
-  confirmedPasswordChanged
+  confirmedPasswordChanged,
+  signupCancel,
+  signupUserCreate
 } from "../actions";
 import { PerformResetNavigation } from "../helpers";
 import { LOG_IN_SCREEN } from "../values/screens";
+import { Ionicons } from "@expo/vector-icons";
 
 class SignUpForm extends Component {
+  static navigationOptions = ({ navigation, screenProps }) => ({
+    title: "Create new user"
+  });
+
+  componentWillMount() {
+    BackHandler.addEventListener("backPress", () => {
+      const { navigation } = this.props;
+      this.props.signupCancel({ navigation });
+    });
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener("backPress");
+  }
+
   onEmailChange(text) {
     this.props.emailChanged(text);
   }
@@ -21,6 +39,44 @@ class SignUpForm extends Component {
 
   onConfirmedPasswordChange(text) {
     this.props.confirmedPasswordChanged(text);
+  }
+
+  onSignUpCancel() {
+    const { navigation } = this.props;
+    this.props.signupCancel({ navigation });
+  }
+
+  onSignUpCreate() {
+    const { email, password, confirmedPassword, navigation } = this.props;
+    this.props.signupUserCreate({
+      email,
+      password,
+      confirmedPassword,
+      navigation
+    });
+  }
+
+  renderError() {
+    if (!this.props.error || 0 !== this.props.error.length) {
+      return (
+        <View style={styles.errorViewStyle}>
+          <Text style={styles.errorTextStyle}>{this.props.error}</Text>
+        </View>
+      );
+    }
+  }
+
+  renderButton() {
+    createButton = (
+      <Button style={{ flex: 1 }} onPress={this.onSignUpCreate.bind(this)}>
+        Create
+      </Button>
+    );
+    if (this.props.loading) {
+      createButton = <Spinner size="large" />;
+    }
+
+    return createButton;
   }
 
   render() {
@@ -53,25 +109,45 @@ class SignUpForm extends Component {
             onChangeText={this.onConfirmedPasswordChange.bind(this)}
           />
         </CardSection>
+
+        {this.renderError()}
+
         <CardSection style={{ justifyContent: "center" }}>
-          <Button style={{ flex: 1 }}>Cancel</Button>
-          <Button style={{ flex: 1 }}>Create</Button>
+          <Button style={{ flex: 1 }} onPress={this.onSignUpCancel.bind(this)}>
+            Cancel
+          </Button>
+          {this.renderButton()}
         </CardSection>
       </Card>
     );
   }
 }
 
+const styles = {
+  errorViewStyle: {
+    backgroundColor: "white"
+  },
+  errorTextStyle: {
+    fontSize: 20,
+    alignSelf: "center",
+    color: "red"
+  }
+};
+
 const mapStateToProps = state => {
   return {
     email: state.auth.email,
     password: state.auth.password,
-    confirmedPassword: state.auth.confirmedPassword
+    confirmedPassword: state.auth.confirmedPassword,
+    error: state.auth.error,
+    loading: state.auth.loading
   };
 };
 
 export default connect(mapStateToProps, {
   emailChanged,
   passwordChanged,
-  confirmedPasswordChanged
+  confirmedPasswordChanged,
+  signupCancel,
+  signupUserCreate
 })(SignUpForm);

@@ -18,7 +18,8 @@ import {
   passwordChanged,
   loginUser,
   onFbLogin,
-  onGoogleLogin
+  onGoogleLogin,
+  autoLogin
 } from "../actions";
 import firebase from "firebase";
 import { PerformStackNavigation } from "../helpers";
@@ -220,5 +221,6 @@ export default connect(mapStateToProps, {
   passwordChanged,
   loginUser,
   onFbLogin,
-  onGoogleLogin
+  onGoogleLogin,
+  autoLogin
 })(LoginForm);

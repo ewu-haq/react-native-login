@@ -5,7 +5,11 @@ import {
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FAIL,
   LOGGGIN_IN,
-  LOG_OUT
+  LOG_OUT,
+  CANCEL_SIGN_UP,
+  USER_CREATE_FAIL_SIGN_UP,
+  USER_CREATE_IN_PROGRESS_SIGN_UP,
+  USER_CREATE_SIGN_UP
 } from "../values/types";
 import { USER_DATA } from "../values/constants";
 import { LOG_OUT_SCREEN, LOG_IN_SCREEN } from "../values/screens";
@@ -31,6 +35,12 @@ export const confirmedPasswordChanged = text => {
   return {
     type: CONFIRMED_PASSWORD_CHANGED,
     payload: text
+  };
+};
+
+export const autoLogin = ({ user, navigation }) => {
+  return dispatch => {
+    loginUserAccess(dispatch, user, navigation);
   };
 };
 
@@ -78,8 +88,6 @@ export const logoutUser = ({ navigation }) => {
     dispatch({
       type: LOG_OUT
     });
-
-    PerformResetNavigation(navigation, LOG_IN_SCREEN);
   };
 };
 
@@ -116,6 +124,59 @@ export const onGoogleLogin = ({ idToken, accessToken, navigation }) => {
       .catch(error => {
         console.log("fail: " + error);
         loginUserFailed(dispatch);
+      });
+  };
+};
+
+const userCreationCancel = (dispatch, navigation) => {
+  dispatch({
+    type: CANCEL_SIGN_UP
+  });
+
+  navigation.goBack();
+};
+
+export const signupCancel = ({ navigation }) => {
+  return dispatch => {
+    userCreationCancel(dispatch, navigation);
+  };
+};
+
+const userCreationInProgress = dispatch => {
+  dispatch({
+    type: USER_CREATE_IN_PROGRESS_SIGN_UP
+  });
+};
+
+const userCreationFailed = (dispatch, message) => {
+  dispatch({
+    type: USER_CREATE_FAIL_SIGN_UP,
+    payload: message
+  });
+};
+
+const userCreationSuccess = (dispatch, navigation) => {
+  dispatch({
+    type: USER_CREATE_SIGN_UP
+  });
+};
+
+export const signupUserCreate = ({
+  email,
+  password,
+  confirmedPassword,
+  navigation
+}) => {
+  return dispatch => {
+    userCreationInProgress(dispatch);
+    firebase
+      .auth()
+      .createUserAndRetrieveDataWithEmailAndPassword(email, password)
+      .then(userCredential => {
+        userCreationSuccess(dispatch, navigation);
+      })
+      .catch(error => {
+        userCreationFailed(dispatch, error.message);
       });
   };
 };

@@ -5,7 +5,11 @@ import {
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FAIL,
   LOGGGIN_IN,
-  LOG_OUT
+  LOG_OUT,
+  CANCEL_SIGN_UP,
+  USER_CREATE_SIGN_UP,
+  USER_CREATE_FAIL_SIGN_UP,
+  USER_CREATE_IN_PROGRESS_SIGN_UP
 } from "../values/types";
 
 const INITIAL_STATE = {
@@ -39,6 +43,20 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, loading: true };
     case LOG_OUT:
       return { ...state, ...INITIAL_STATE };
+    case CANCEL_SIGN_UP:
+      return { ...state, ...INITIAL_STATE };
+    case USER_CREATE_SIGN_UP:
+      return { ...state, ...INITIAL_STATE, email: state.email };
+    case USER_CREATE_FAIL_SIGN_UP:
+      return {
+        ...state,
+        error: action.payload,
+        password: "",
+        confirmedPassword: "",
+        loading: false
+      };
+    case USER_CREATE_IN_PROGRESS_SIGN_UP:
+      return { ...state, loading: true };
     default:
       return state;
   }
