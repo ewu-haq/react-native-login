@@ -8,9 +8,11 @@ const Card = props => {
 
 const styles = {
   containerStyle: {
+    flex: 1,
+    backgroundColor: "#fff",
     borderWidth: 1, // width of border is 1
     borderRadius: 2, // around the corner of border to radius of 2
-    borderColor: "#ddd",
+    borderColor: "transparent",
     borderBottomWidth: 0, // remove border at bottom
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 }, // add shadow at bottom

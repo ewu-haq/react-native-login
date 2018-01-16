@@ -6,9 +6,11 @@ import {
   LOGGGIN_IN,
   LOG_OUT
 } from "../values/types";
+import { USER_DATA } from "../values/constants";
 import { LOG_OUT_SCREEN, LOG_IN_SCREEN } from "../values/screens";
 import firebase from "firebase";
 import { PerformResetNavigation } from "../helpers";
+import { AsyncStorage } from "react-native";
 
 export const emailChanged = text => {
   return {
@@ -74,54 +76,38 @@ export const logoutUser = ({ navigation }) => {
 };
 
 export const onFbLogin = ({ token, navigation }) => {
-  const credential = firebase.auth.FacebookAuthProvider.credential(token);
   return dispatch => {
     loginInProgress(dispatch);
+    const credential = firebase.auth.FacebookAuthProvider.credential(token);
+
     firebase
       .auth()
       .signInWithCredential(credential)
       .then(user => {
-        dispatch({
-          type: LOGIN_USER_SUCCESS,
-          payload: user
-        });
-
-        PerformResetNavigation(navigation, LOG_OUT_SCREEN);
+        loginUserAccess(dispatch, user, navigation);
       })
       .catch(error => {
-        dispatch({
-          type: LOGIN_USER_FAIL
-        });
+        loginUserFailed(dispatch);
       });
   };
 };
 
-export const onGoogleLogin = ({ idToken, accessKey, navigation }) => {
-  const credential = firebase.auth.GoogleAuthProvider.credential(
-    idToken,
-    accessKey
-  );
-  console.log("credential: ");
-  console.log(credential);
+export const onGoogleLogin = ({ idToken, accessToken, navigation }) => {
   return dispatch => {
     loginInProgress(dispatch);
+    const credential = firebase.auth.GoogleAuthProvider.credential(
+      idToken,
+      accessToken
+    );
     firebase
       .auth()
       .signInWithCredential(credential)
       .then(user => {
-        console.log("success: ");
-        dispatch({
-          type: LOGIN_USER_SUCCESS,
-          payload: user
-        });
-
-        PerformResetNavigation(navigation, LOG_OUT_SCREEN);
+        loginUserAccess(dispatch, user, navigation);
       })
       .catch(error => {
         console.log("fail: " + error);
-        dispatch({
-          type: LOGIN_USER_FAIL
-        });
+        loginUserFailed(dispatch);
       });
   };
 };

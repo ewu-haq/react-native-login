@@ -1,7 +1,17 @@
 import React, { Component } from "react";
-import { View, Text } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  AsyncStorage,
+  TouchableHighlight,
+  TouchableNativeFeedback,
+  TouchableWithoutFeedback
+} from "react-native";
 import FBSDK, { AccessToken, LoginManager } from "react-native-fbsdk";
-import { Card, CardSection, Input, Button, Spinner } from "./common";
+import { Card, CardSection, IconInput, Button, Spinner } from "./common";
+import { USER_DATA } from "../values/constants";
 import { connect } from "react-redux";
 import {
   emailChanged,
@@ -17,6 +27,12 @@ class LoginForm extends Component {
     title: "Log in"
   });
 
+  async restoreUserSection() {
+    await AsyncStorage.getItem(USER_DATA).then(user_data_json => {
+      let user_data = JSON.parse(user_data_json);
+    });
+  }
+
   onEmailChange(text) {
     this.props.emailChanged("a@m.com"); // For testing only
   }
@@ -28,6 +44,10 @@ class LoginForm extends Component {
   onButtonPress() {
     const { email, password, navigation } = this.props;
     this.props.loginUser({ email, password, navigation });
+  }
+
+  onSignUpText() {
+    const { email, navigation } = this.props;
   }
 
   async onFbLogin() {
@@ -59,11 +79,11 @@ class LoginForm extends Component {
         this.props.onGoogleLogin({ idToken, accessToken, navigation });
       } else {
         console.log("cancelled");
-        return { cancelled: true };
+        return null;
       }
     } catch (e) {
       console.log("error: " + e);
-      return { error: true };
+      return null;
     }
   }
 
@@ -78,53 +98,101 @@ class LoginForm extends Component {
   }
 
   renderButton() {
+    loginButton = (
+      <Button onPress={this.onButtonPress.bind(this)}>Login</Button>
+    );
     if (this.props.loading) {
-      return <Spinner size="large" />;
+      loginButton = <Spinner size="large" />;
     }
 
-    return <Button onPress={this.onButtonPress.bind(this)}>Login</Button>;
+    return <CardSection>{loginButton}</CardSection>;
+  }
+
+  renderSocialLogin() {
+    return (
+      <CardSection
+        style={{
+          justifyContent: "center"
+        }}
+      >
+        <TouchableOpacity
+          style={{ flex: 1 }}
+          onPress={this.onFbLogin.bind(this)}
+        >
+          <Image
+            source={require("./facebook_login_button.png")}
+            style={styles.facebookSigninButton}
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={{ flex: 2 }}
+          onPress={this.signInWithGoogleAsync.bind(this)}
+        >
+          <Image
+            source={require("./google_login_button.png")}
+            style={styles.googleSigninButton}
+          />
+        </TouchableOpacity>
+      </CardSection>
+    );
   }
 
   render() {
+    const { email, password } = this.props;
     return (
       <Card>
         <CardSection>
-          <Input
-            label="Email"
+          <IconInput
+            iconName="user"
             placeholder="a@mail.com"
             onChangeText={this.onEmailChange.bind(this)}
-            value={this.props.email}
+            value={email}
           />
         </CardSection>
+
         <CardSection>
-          <Input
+          <IconInput
+            iconName="lock"
             secureTextEntry
             label="Password"
             placeholder="password"
             onChangeText={this.onPasswordChange.bind(this)}
-            value={this.props.password}
+            value={password}
           />
         </CardSection>
 
         {this.renderError()}
 
-        <CardSection>{this.renderButton()}</CardSection>
+        {this.renderButton()}
+
         <CardSection>
-          <Button onPress={this.onFbLogin.bind(this)}>
-            Login with Facebook
+          <Button onPress={this.onSignUpText.bind(this)}>
+            No Account ? Sign up here
           </Button>
         </CardSection>
-        <CardSection>
-          <Button onPress={this.signInWithGoogleAsync.bind(this)}>
-            Login with Google
-          </Button>
+
+        <CardSection style={{ justifyContent: "center" }}>
+          <Text style={{ alignSelf: "center" }}> --------- Or --------- </Text>
         </CardSection>
+
+        {this.renderSocialLogin()}
       </Card>
     );
   }
 }
 
 const styles = {
+  facebookSigninButton: {
+    width: null,
+    height: 60,
+    resizeMode: "contain"
+  },
+  googleSigninButton: {
+    width: null,
+    height: 60,
+    resizeMode: "contain"
+  },
   errorViewStyle: {
     backgroundColor: "white"
   },
