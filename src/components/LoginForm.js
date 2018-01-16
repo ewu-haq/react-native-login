@@ -21,6 +21,8 @@ import {
   onGoogleLogin
 } from "../actions";
 import firebase from "firebase";
+import { PerformStackNavigation } from "../helpers";
+import { SIGN_UP_SCREEN } from "../values/screens";
 
 class LoginForm extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
@@ -34,11 +36,11 @@ class LoginForm extends Component {
   }
 
   onEmailChange(text) {
-    this.props.emailChanged("a@m.com"); // For testing only
+    this.props.emailChanged(text);
   }
 
   onPasswordChange(text) {
-    this.props.passwordChanged("123456"); // for testing only
+    this.props.passwordChanged(text);
   }
 
   onButtonPress() {
@@ -47,7 +49,8 @@ class LoginForm extends Component {
   }
 
   onSignUpText() {
-    const { email, navigation } = this.props;
+    const { navigation } = this.props;
+    PerformStackNavigation(this.props.navigation, SIGN_UP_SCREEN);
   }
 
   async onFbLogin() {

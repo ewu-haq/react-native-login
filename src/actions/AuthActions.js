@@ -1,6 +1,7 @@
 import {
   EMAIL_CHANGED,
   PASSWORD_CHANGED,
+  CONFIRMED_PASSWORD_CHANGED,
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FAIL,
   LOGGGIN_IN,
@@ -22,6 +23,13 @@ export const emailChanged = text => {
 export const passwordChanged = text => {
   return {
     type: PASSWORD_CHANGED,
+    payload: text
+  };
+};
+
+export const confirmedPasswordChanged = text => {
+  return {
+    type: CONFIRMED_PASSWORD_CHANGED,
     payload: text
   };
 };
