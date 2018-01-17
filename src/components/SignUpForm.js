@@ -15,18 +15,26 @@ import { Ionicons } from "@expo/vector-icons";
 
 class SignUpForm extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
-    title: "Create new user"
+    title: "Create new user",
+    headerLeft: (
+      <Icon
+        Ionicons="arrow-left"
+        onPress={() => {
+          navigation.goBack();
+        }}
+      />
+    )
   });
 
-  componentWillMount() {
-    BackHandler.addEventListener("backPress", () => {
+  componentDidMount() {
+    BackHandler.addEventListener("hardwareBackPress", () => {
       const { navigation } = this.props;
-      this.props.signupCancel({ navigation });
+      PerformResetNavigation(navigation, LOG_IN_SCREEN);
     });
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener("backPress");
+    BackHandler.removeEventListener("hardwareBackPress");
   }
 
   onEmailChange(text) {

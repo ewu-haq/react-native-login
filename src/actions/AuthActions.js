@@ -169,14 +169,19 @@ export const signupUserCreate = ({
 }) => {
   return dispatch => {
     userCreationInProgress(dispatch);
-    firebase
-      .auth()
-      .createUserAndRetrieveDataWithEmailAndPassword(email, password)
-      .then(userCredential => {
-        userCreationSuccess(dispatch, navigation);
-      })
-      .catch(error => {
-        userCreationFailed(dispatch, error.message);
-      });
+
+    if (password !== confirmedPassword) {
+      userCreationFailed(dispatch, "Confirmed password does not match !!!");
+    } else {
+      firebase
+        .auth()
+        .createUserAndRetrieveDataWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          userCreationSuccess(dispatch, navigation);
+        })
+        .catch(error => {
+          userCreationFailed(dispatch, error.message);
+        });
+    }
   };
 };
