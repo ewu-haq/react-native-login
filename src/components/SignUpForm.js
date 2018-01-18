@@ -10,17 +10,19 @@ import {
   signupUserCreate
 } from "../actions";
 import { PerformResetNavigation } from "../helpers";
-import { LOG_IN_SCREEN } from "../values/screens";
+import { LOG_IN_SCREEN, SIGN_UP_SCREEN } from "../values/screens";
 import { Ionicons } from "@expo/vector-icons";
 
 class SignUpForm extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
     title: "Create new user",
     headerLeft: (
-      <Icon
-        Ionicons="arrow-left"
+      <Ionicons
+        name="ios-arrow-back"
         onPress={() => {
-          navigation.goBack();
+          console.log(JSON.stringify(screenProps));
+          console.log(JSON.stringify(this.props));
+          this.props.signupCancel({ navigation });
         }}
       />
     )
@@ -29,11 +31,17 @@ class SignUpForm extends Component {
   componentDidMount() {
     BackHandler.addEventListener("hardwareBackPress", () => {
       const { navigation } = this.props;
-      PerformResetNavigation(navigation, LOG_IN_SCREEN);
+      if (navigation.state.routeName === SIGN_UP_SCREEN) {
+        this.props.signupCancel({ navigation });
+        return true;
+      } else {
+        return false;
+      }
     });
   }
 
   componentWillUnmount() {
+    console.log("android button unmount ");
     BackHandler.removeEventListener("hardwareBackPress");
   }
 
