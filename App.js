@@ -4,6 +4,7 @@ import { createStore, applyMiddleware } from "redux";
 import reducers from "./src/reducers";
 import ReduxThunk from "redux-thunk";
 import firebase from "firebase";
+
 import AppWithNavigationState from "./src/components/AppWithNavigationState";
 
 class App extends React.Component {

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, BackHandler } from "react-native";
+import { View, Text, BackHandler, TouchableOpacity } from "react-native";
 import { Card, CardSection, IconInput, Button, Spinner } from "./common";
 import { connect } from "react-redux";
 import {
@@ -7,7 +7,8 @@ import {
   passwordChanged,
   confirmedPasswordChanged,
   signupCancel,
-  signupUserCreate
+  signupUserCreate,
+  cleanUpErrorMessages
 } from "../actions";
 import { PerformResetNavigation } from "../helpers";
 import { LOG_IN_SCREEN, SIGN_UP_SCREEN } from "../values/screens";
@@ -17,16 +18,19 @@ class SignUpForm extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
     title: "Create new user",
     headerLeft: (
-      <Ionicons
-        name="ios-arrow-back"
+      <TouchableOpacity
         onPress={() => {
-          console.log(JSON.stringify(screenProps));
-          console.log(JSON.stringify(this.props));
-          this.props.signupCancel({ navigation });
+          PerformResetNavigation(navigation, LOG_IN_SCREEN);
         }}
-      />
+      >
+        <Ionicons style={{ paddingLeft: 10 }} size={40} name="ios-arrow-back" />
+      </TouchableOpacity>
     )
   });
+
+  componentWillMount() {
+    this.props.cleanUpErrorMessages();
+  }
 
   componentDidMount() {
     BackHandler.addEventListener("hardwareBackPress", () => {
@@ -41,7 +45,6 @@ class SignUpForm extends Component {
   }
 
   componentWillUnmount() {
-    console.log("android button unmount ");
     BackHandler.removeEventListener("hardwareBackPress");
   }
 
@@ -165,5 +168,6 @@ export default connect(mapStateToProps, {
   passwordChanged,
   confirmedPasswordChanged,
   signupCancel,
-  signupUserCreate
+  signupUserCreate,
+  cleanUpErrorMessages
 })(SignUpForm);

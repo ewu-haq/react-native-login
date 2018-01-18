@@ -9,7 +9,8 @@ import {
   CANCEL_SIGN_UP,
   USER_CREATE_FAIL_SIGN_UP,
   USER_CREATE_IN_PROGRESS_SIGN_UP,
-  USER_CREATE_SIGN_UP
+  USER_CREATE_SIGN_UP,
+  CLEAN_UP
 } from "../values/types";
 import { USER_DATA } from "../values/constants";
 import { LOG_OUT_SCREEN, LOG_IN_SCREEN } from "../values/screens";
@@ -183,5 +184,11 @@ export const signupUserCreate = ({
           userCreationFailed(dispatch, error.message);
         });
     }
+  };
+};
+
+export const cleanUpErrorMessages = () => {
+  return {
+    type: CLEAN_UP
   };
 };

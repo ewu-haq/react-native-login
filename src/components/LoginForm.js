@@ -19,7 +19,8 @@ import {
   loginUser,
   onFbLogin,
   onGoogleLogin,
-  autoLogin
+  autoLogin,
+  cleanUpErrorMessages
 } from "../actions";
 import firebase from "firebase";
 import { PerformStackNavigation } from "../helpers";
@@ -30,10 +31,8 @@ class LoginForm extends Component {
     title: "Log in"
   });
 
-  async restoreUserSection() {
-    await AsyncStorage.getItem(USER_DATA).then(user_data_json => {
-      let user_data = JSON.parse(user_data_json);
-    });
+  componentWillMount() {
+    this.props.cleanUpErrorMessages();
   }
 
   onEmailChange(text) {
@@ -222,5 +221,6 @@ export default connect(mapStateToProps, {
   loginUser,
   onFbLogin,
   onGoogleLogin,
-  autoLogin
+  autoLogin,
+  cleanUpErrorMessages
 })(LoginForm);

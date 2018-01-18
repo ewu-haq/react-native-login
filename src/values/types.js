@@ -11,3 +11,4 @@ export const USER_CREATE_SIGN_UP = "user_create_sign_up";
 export const USER_CREATE_FAIL_SIGN_UP = "USER_CREATE_FAIL_SIGN_UP";
 export const USER_CREATE_IN_PROGRESS_SIGN_UP =
   "USER_CREATE_IN_PROGRESS_SIGN_UP";
+export const CLEAN_UP = "CLEAN_UP";

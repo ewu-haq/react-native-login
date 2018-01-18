@@ -9,7 +9,8 @@ import {
   CANCEL_SIGN_UP,
   USER_CREATE_SIGN_UP,
   USER_CREATE_FAIL_SIGN_UP,
-  USER_CREATE_IN_PROGRESS_SIGN_UP
+  USER_CREATE_IN_PROGRESS_SIGN_UP,
+  CLEAN_UP
 } from "../values/types";
 
 const INITIAL_STATE = {
@@ -57,6 +58,14 @@ export default (state = INITIAL_STATE, action) => {
       };
     case USER_CREATE_IN_PROGRESS_SIGN_UP:
       return { ...state, loading: true };
+    case CLEAN_UP:
+      return {
+        ...state,
+        loading: false,
+        password: "",
+        confirmedPassword: "",
+        error: ""
+      };
     default:
       return state;
   }
