@@ -24,7 +24,7 @@ import {
 } from "../actions";
 import firebase from "firebase";
 import { PerformStackNavigation } from "../helpers";
-import { SIGN_UP_SCREEN } from "../values/screens";
+import { SIGN_UP_SCREEN, RESET_PASSWORD_SCREEN } from "../values/screens";
 
 class LoginForm extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
@@ -49,8 +49,11 @@ class LoginForm extends Component {
   }
 
   onSignUpText() {
-    const { navigation } = this.props;
     PerformStackNavigation(this.props.navigation, SIGN_UP_SCREEN);
+  }
+
+  onForgetPasswordText() {
+    PerformStackNavigation(this.props.navigation, RESET_PASSWORD_SCREEN);
   }
 
   async onFbLogin() {
@@ -168,6 +171,12 @@ class LoginForm extends Component {
         {this.renderError()}
 
         {this.renderButton()}
+
+        <CardSection>
+          <Button onPress={this.onForgetPasswordText.bind(this)}>
+            Forget your password ?
+          </Button>
+        </CardSection>
 
         <CardSection>
           <Button onPress={this.onSignUpText.bind(this)}>

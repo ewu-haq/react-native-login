@@ -1,6 +1,13 @@
 import React, { Component } from "react";
-import { View, Text, BackHandler, TouchableOpacity } from "react-native";
-import { Card, CardSection, IconInput, Button, Spinner } from "./common";
+import { View, Text, BackHandler } from "react-native";
+import {
+  Card,
+  CardSection,
+  IconInput,
+  Button,
+  Spinner,
+  TouchableIonicons
+} from "./common";
 import { connect } from "react-redux";
 import {
   emailChanged,
@@ -12,19 +19,19 @@ import {
 } from "../actions";
 import { PerformResetNavigation } from "../helpers";
 import { LOG_IN_SCREEN, SIGN_UP_SCREEN } from "../values/screens";
-import { Ionicons } from "@expo/vector-icons";
 
 class SignUpForm extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
     title: "Create new user",
     headerLeft: (
-      <TouchableOpacity
+      <TouchableIonicons
+        style={{ paddingLeft: 10 }}
+        size={40}
+        name="ios-arrow-back"
         onPress={() => {
           PerformResetNavigation(navigation, LOG_IN_SCREEN);
         }}
-      >
-        <Ionicons style={{ paddingLeft: 10 }} size={40} name="ios-arrow-back" />
-      </TouchableOpacity>
+      />
     )
   });
 
