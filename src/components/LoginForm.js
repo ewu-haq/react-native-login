@@ -24,7 +24,7 @@ import {
 } from "../actions";
 import firebase from "firebase";
 import { PerformStackNavigation } from "../helpers";
-import { SIGN_UP_SCREEN, RESET_PASSWORD_SCREEN } from "../values/screens";
+import { SIGN_UP_SCREEN, FORGOT_PASSWORD_SCREEN } from "../values/screens";
 
 class LoginForm extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
@@ -53,7 +53,7 @@ class LoginForm extends Component {
   }
 
   onForgetPasswordText() {
-    PerformStackNavigation(this.props.navigation, RESET_PASSWORD_SCREEN);
+    PerformStackNavigation(this.props.navigation, FORGOT_PASSWORD_SCREEN);
   }
 
   async onFbLogin() {
